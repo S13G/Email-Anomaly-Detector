@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=\, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>Send Email</title>
+
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+    </style>
+</head>
+<body class="center-body">
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+<div class="container">
+    <!-- Back to Inbox Button -->
+    <a href="{{ url_for('inbox') }}">
+        <button class="btn">Back to Inbox</button>
+    </a>
+
+    <form class="mail-container" method="POST" action="{{ url_for('send_message') }}">
+
+        <h2 class="heading">Send Message</h2>
+        <input class="input" type="email" name="email" placeholder="Email Address" required/>
+        <input class="input" type="text" name="subject" placeholder="Subject" required/>
+        <textarea class="input" rows="8" name="message" placeholder="Say Something..." required></textarea>
+        <button class="btn" type="submit">Send Message</button>
+    </form>
+</div>
+
+
+<script>
+    // Hide flash messages after 5 seconds
+    setTimeout(() => {
+        const flashes = document.querySelectorAll('.flash');
+        flashes.forEach(flash => {
+            flash.style.opacity = '0'; // Fade out
+            setTimeout(() => flash.remove(), 500); // Remove after fading
+        });
+    }, 2000); // 5000 ms = 5 seconds
+</script>
+</body>
+</html>

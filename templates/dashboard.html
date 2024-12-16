@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>Anomaly Detector</title>
+</head>
+<body>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<div class="heading">
+    <div class="toggle-btn">
+        <i class="bi bi-list"></i>
+    </div>
+    <div>
+        <h1>Email Anomaly Detector </h1>
+    </div>
+</div>
+<div class="container">
+    <div class="sidebar">
+        <a href="/">
+                <span class="bar active">
+                    <i class="bi bi-inbox"></i>
+                    <p>Inbox</p>
+                </span>
+        </a>
+        <a href="/flagged">
+                <span class="bar">
+                    <i class="bi bi-flag"></i>
+                    <p>Flagged</p>
+                </span>
+        </a>
+        <a href="/send">
+            <span class="bar">
+                <i class="bi bi-send"></i>
+                <p>Send Email</p>
+            </span>
+        </a>
+        <a href="/add-domain">
+            <span class="bar">
+                <i class="bi bi-plus-circle"></i>
+                <p>Add Domain</p>
+            </span>
+        </a>
+    </div>
+    <div class="main-body">
+        <div class="email-card-container">
+            {% for message in messages %}
+                <div class="email-card">
+                    <span class="email-title">{{ message.sender_email }}</span>
+                    <div class="email-body">
+                        <span>{{ message.title }}</span>
+                        <span>-</span>
+                        <span>{{ message.content[:100] }}...</span>
+                    </div>
+                </div>
+            {% else %}
+                <p>No messages to display.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script>
+    const btn = document.querySelector(".toggle-btn")
+    const mainBody = document.querySelector(".main-body")
+    const sidebar = document.querySelector(".sidebar")
+    let show = false
+
+    setTimeout(() => {
+        const flashes = document.querySelectorAll('.flash');
+        flashes.forEach(flash => {
+            flash.style.opacity = '0'; // Fade out
+            setTimeout(() => flash.remove(), 500); // Remove after fading
+        });
+    }, 2000);
+
+    btn.addEventListener("click", () => {
+        if (!show) {
+            if (window.screen.width >= 900) {
+                sidebar.style.display = "flex"
+                mainBody.style.width = "85%"
+            } else {
+                sidebar.style.display = "flex"
+                sidebar.style.width = "100%"
+                mainBody.style.display = "none"
+            }
+            show = true
+        } else {
+            if (window.screen.width >= 900) {
+                sidebar.style.display = "none"
+                mainBody.style.width = "100%"
+            } else {
+                sidebar.style.display = "none"
+                sidebar.style.width = "100%"
+                mainBody.style.display = "flex"
+            }
+
+            show = false
+
+        }
+
+    })
+</script>
+</body>
+</html>

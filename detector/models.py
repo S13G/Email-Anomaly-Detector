@@ -18,9 +18,10 @@ class Message(db.Model):
         return f"<Message {self.sender_email}>"
 
 
-class AllowedDomain(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    domain = db.Column(db.String(120), unique=True, nullable=False)
-
-    def __repr__(self):
-        return f"<AllowedDomain {self.domain}>"
+#
+# class AllowedDomain(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     domain = db.Column(db.String(120), unique=True, nullable=False)
+#
+#     def __repr__(self):
+#         return f"<AllowedDomain {self.domain}>"

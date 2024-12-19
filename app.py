@@ -1,12 +1,18 @@
 # app.py
-from flask import Flask, render_template, request, redirect, url_for, flash
+import os
 
-from detector.models import db, Message, AllowedDomain
+import requests
+from flask import render_template, request, redirect, url_for, flash, Flask
+
+from detector.models import db, Message
 
 app = Flask(__name__)
+app.config["ANYMAILFINDER_API_KEY"] = os.getenv("ANYMAILFINDER_API_KEY")
+app.config["JSONIFY_PRETTYPRINT_REGULAR"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.secret_key = "3ac32d70cc4f2ffc22523d5d719834be87fdd4d0b2361172205cb1c3c27823c1"
+app.secret_key = os.getenv("SECRET_KEY")
+
 db.init_app(app)
 
 with app.app_context():
@@ -14,6 +20,26 @@ with app.app_context():
 
 # WSGI requires the app to be named "application"
 application = app
+
+ANYMAILFINDER_API_KEY = app.config["ANYMAILFINDER_API_KEY"]
+
+
+# Helper function to validate email using Anymailfinder API
+def validate_email(email):
+    url = "https://api.anymailfinder.com/v5.0/validate.json"
+    headers = {"Authorization": f"Bearer {ANYMAILFINDER_API_KEY}"}
+    payload = {"email": email}
+
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+
+        if response.status_code == 200:
+            data = response.json()
+            return data.get("validation") in ["valid", "deliverable"]
+        else:
+            return False
+    except requests.exceptions.RequestException as e:
+        return False
 
 
 @app.route("/")
@@ -28,30 +54,6 @@ def flagged():
     return render_template("flagged.html", messages=messages)
 
 
-@app.route("/add-domain", methods=["GET", "POST"])
-def add_domain():
-    if request.method == "POST":
-        domain = request.form["domain"]
-
-        if not domain or not domain.startswith("@"):
-            flash("Please enter a valid domain (e.g. @example.com).", "danger")
-            return redirect(url_for("add_domain"))
-
-        # Check if domain already exists
-        existing_domain = AllowedDomain.query.filter_by(domain=domain).first()
-        if existing_domain:
-            flash("Domain already exists!", "warning")
-            return redirect(url_for("add_domain"))
-        else:
-            new_domain = AllowedDomain(domain=domain)
-            db.session.add(new_domain)
-            db.session.commit()
-            flash("Domain added successfully!", "success")
-            return redirect(url_for("inbox"))
-
-    return render_template("add_domain.html")
-
-
 @app.route("/send", methods=["GET", "POST"])
 def send_message():
     if request.method == "POST":
@@ -63,12 +65,10 @@ def send_message():
             flash("Email and content are required!", "danger")
             return redirect(url_for("send_message"))
 
-        # Fetch allowed domains from the database
-        allowed_domains = [domain.domain for domain in AllowedDomain.query.all()]
-        is_flagged = not any(
-            sender_email.endswith(domain) for domain in allowed_domains
-        )
+        # Validate the email
+        is_flagged = not validate_email(sender_email)
 
+        # Save the message
         message = Message(
             sender_email=sender_email,
             title=title,

@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <title>Anomaly Detector</title>
 </head>
+
 <body>
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -26,7 +27,7 @@
         <i class="bi bi-list"></i>
     </div>
     <div>
-        <h1>Email Anomaly Detector </h1>
+        <h1>Email Anomaly Detector Dashboard</h1>
     </div>
 </div>
 <div class="container">
@@ -34,7 +35,7 @@
         <a href="/">
                 <span class="bar active">
                     <i class="bi bi-inbox"></i>
-                    <p>Inbox</p>
+                    <p>Sent Emails</p>
                 </span>
         </a>
         <a href="/flagged">
@@ -53,14 +54,14 @@
     <div class="main-body">
         <div class="email-card-container">
             {% for message in messages %}
-                <div class="email-card">
+                <a href="{{ url_for('email_detail', email_id=message.id) }}" class="email-card">
                     <span class="email-title">{{ message.sender_email }}</span>
                     <div class="email-body">
                         <span>{{ message.title }}</span>
                         <span>-</span>
                         <span>{{ message.content[:100] }}...</span>
                     </div>
-                </div>
+                </a>
             {% else %}
                 <p>No messages to display.</p>
             {% endfor %}

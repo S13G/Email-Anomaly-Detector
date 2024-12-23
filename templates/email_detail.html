@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>Email Details</title>
+
+    <style>
+        .main-container {
+            text-align: center;
+            max-width: 600px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .email-detail h2, .email-detail p {
+            margin: 10px 0;
+        }
+
+        .flagged {
+            color: red;
+            font-weight: bold;
+        }
+
+        .sent {
+            color: green;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+<div class="heading">
+    <h1>Email Details</h1>
+</div>
+<div class="main-container">
+    <div class="email-detail">
+        <h2>Sender: {{ message.sender_email }}</h2>
+        <p><strong>Title:</strong> {{ message.title }}</p>
+        <p><strong>Content:</strong></p>
+        <p>{{ message.content }}</p>
+        <p><strong>Timestamp:</strong> {{ message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        {% if message.is_flagged %}
+            <p><strong>Status:</strong> <span class="flagged">Flagged</span></p>
+            <p><strong>Flag Reason:</strong> {{ message.flagged_message }}</p>
+        {% else %}
+            <p><strong>Status:</strong> <span class="sent">Sent Successfully</span></p>
+        {% endif %}
+    </div>
+    <a href="/" class="btn">Back to Inbox</a>
+</div>
+</body>
+</html>

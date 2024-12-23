@@ -16,7 +16,7 @@
         <i class="bi bi-list"></i>
     </div>
     <div>
-        <h1>Email Anomaly Detector </h1>
+        <h1>Email Anomaly Detector Dashboard</h1>
     </div>
 </div>
 <div class="container">
@@ -24,7 +24,7 @@
         <a href="/">
                 <span class="bar">
                     <i class="bi bi-inbox"></i>
-                    <p>Inbox</p>
+                    <p>Sent Emails</p>
                 </span>
         </a>
         <a>
@@ -39,30 +39,24 @@
                 <p>Send Email</p>
             </span>
         </a>
-        <a href="/add-domain">
-            <span class="bar">
-                <i class="bi bi-plus-circle"></i>
-                <p>Add Domain</p>
-            </span>
-        </a>
     </div>
     <div class="main-body">
         <div class="email-card-container">
             {% for message in messages %}
-                <div class="email-card">
+                <a href="{{ url_for('email_detail', email_id=message.id) }}" class="email-card">
                     <span class="email-title">{{ message.sender_email }}</span>
                     <div class="email-body">
                         <span>{{ message.title }}</span>
                         <span>-</span>
                         <span>{{ message.content[:100] }}...</span>
                     </div>
-                </div>
+                </a>
             {% else %}
-                <p>No flagged messages found.</p>
+                <p>No messages to display.</p>
             {% endfor %}
         </div>
+        '
     </div>
-
 </div>
 <script>
     const btn = document.querySelector(".toggle-btn")

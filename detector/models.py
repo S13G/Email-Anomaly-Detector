@@ -12,16 +12,8 @@ class Message(db.Model):
     title = db.Column(db.String(120), nullable=False)
     content = db.Column(db.Text, nullable=False)
     is_flagged = db.Column(db.Boolean, default=False)  # True if flagged
+    flagged_message = db.Column(db.Text, default=None, nullable=True)
     timestamp = db.Column(db.DateTime, default=datetime.now())
 
     def __repr__(self):
         return f"<Message {self.sender_email}>"
-
-
-#
-# class AllowedDomain(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     domain = db.Column(db.String(120), unique=True, nullable=False)
-#
-#     def __repr__(self):
-#         return f"<AllowedDomain {self.domain}>"

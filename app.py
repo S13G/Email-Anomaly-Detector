@@ -19,12 +19,7 @@ app.config["MAIL_PORT"] = 465  # Use 465 for SSL, 587 for TLS
 app.config["MAIL_USE_TLS"] = False
 app.config["MAIL_USE_SSL"] = True
 app.config["MAIL_USERNAME"] = os.getenv("MAIL_EMAIL")  # Your email
-app.config["MAIL_PASSWORD"] = os.getenv(
-    "MAIL_PASSWORD"
-)  # Your email app password
-
-print(app.config["MAIL_PASSWORD"])
-print(app.config["MAIL_USERNAME"])
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")  # Your email app password
 
 mail = Mail(app)
 
@@ -67,7 +62,7 @@ def validate_email(email):
                 return False
         else:
             return False
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException:
         return False
 
 
@@ -123,7 +118,7 @@ def send_message():
         db.session.add(message)
         db.session.commit()
 
-        # Send the email only if it is not flagge
+        # Send the email only if it is not flagged
         if not is_flagged:
             try:
                 email_message = MailMessage(

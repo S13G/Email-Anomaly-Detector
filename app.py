@@ -21,7 +21,7 @@ app.config["MAIL_USE_SSL"] = True
 app.config["MAIL_USERNAME"] = os.getenv("MAIL_EMAIL")  # Your email
 app.config["MAIL_PASSWORD"] = os.getenv(
     "MAIL_PASSWORD"
-)  # Your email password or app password
+)  # Your email app password
 
 print(app.config["MAIL_PASSWORD"])
 print(app.config["MAIL_USERNAME"])
@@ -123,7 +123,7 @@ def send_message():
         db.session.add(message)
         db.session.commit()
 
-        # Send the email only if it is not flagged
+        # Send the email only if it is not flagge
         if not is_flagged:
             try:
                 email_message = MailMessage(
